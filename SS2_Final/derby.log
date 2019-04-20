@@ -1,11 +1,11 @@
 ----------------------------------------------------------------
-Tue Apr 16 12:51:50 ICT 2019:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.8.3.0 - (1405108): instance a816c00e-016a-24b3-95e0-000002b66990 
-on database directory E:\Eclipse\SS2_Final\data\DomainAppTool  with class loader sun.misc.Launcher$AppClassLoader@6bc7c054 
-Loaded from file:/E:/Eclipse/SS2_Final/libs/derby.jar
+Sat Apr 20 21:57:09 ICT 2019:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.8.3.0 - (1405108): instance a816c00e-016a-3b40-461c-000002b5e548 
+on database directory E:\Git\SS2_Final\data\DomainAppTool  with class loader sun.misc.Launcher$AppClassLoader@6bc7c054 
+Loaded from file:/E:/Git/SS2_Final/libs/derby.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_144-b01
-user.dir=E:\Eclipse\SS2_Final
+user.dir=E:\Git\SS2_Final
 os.name=Windows 10
 os.arch=amd64
 os.version=10.0

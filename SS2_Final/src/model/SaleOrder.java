@@ -1,10 +1,18 @@
 package model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import domainapp.basics.exceptions.ConstraintViolationException;
 import domainapp.basics.model.meta.AttrRef;
+import domainapp.basics.model.meta.DAssoc;
+import domainapp.basics.model.meta.DAssoc.AssocEndType;
+import domainapp.basics.model.meta.DAssoc.AssocType;
+import domainapp.basics.model.meta.DAssoc.Associate;
 import domainapp.basics.model.meta.DAttr;
-import domainapp.basics.model.meta.DOpt;
 import domainapp.basics.model.meta.DAttr.Type;
+import domainapp.basics.model.meta.DOpt;
+import domainapp.basics.model.meta.Select;
 import domainapp.basics.util.Tuple;
 
 public class SaleOrder {
@@ -28,26 +36,32 @@ public class SaleOrder {
 			"unitPrice", "quantity" })
 	private Integer totalPrice;
 
+	@DAttr(name = "detailExOrders", type = Type.Collection, optional = false, serialisable = false, filter = @Select(clazz = DetailExOrder.class))
+	@DAssoc(ascName = "saleOrder-has-detailExOrders", role = "saleOrder", ascType = AssocType.One2Many, endType = AssocEndType.One, associate = @Associate(type = DetailExOrder.class, cardMin = 0, cardMax = 30))
+	private Collection<DetailExOrder> detailExOrders;
+
+	private int count;
+
 	@DOpt(type = DOpt.Type.DataSourceConstructor)
-	public SaleOrder(String id, Customer customer, String product, Integer unitPrice, Integer quantity
-			) {
+	public SaleOrder(String id, Customer customer, String product, Integer unitPrice, Integer quantity) {
 		this.id = nextID(id);
 		this.customer = customer;
 		this.product = product;
 		this.unitPrice = unitPrice;
 		this.quantity = quantity;
 		calTotal();
+		detailExOrders = new ArrayList<>();
+		count = 0;
 	}
 
 	public void calTotal() {
-		 totalPrice = unitPrice * quantity;
+		totalPrice = unitPrice * quantity;
 	}
 
 	@DOpt(type = DOpt.Type.ObjectFormConstructor)
 	@DOpt(type = DOpt.Type.RequiredConstructor)
 	public SaleOrder(@AttrRef("customer") Customer customer, @AttrRef("product") String product,
-			@AttrRef("unitPrice") Integer unitPrice, @AttrRef("quantity") Integer quantity
-			) {
+			@AttrRef("unitPrice") Integer unitPrice, @AttrRef("quantity") Integer quantity) {
 		this(null, customer, product, unitPrice, quantity);
 	}
 
@@ -91,6 +105,77 @@ public class SaleOrder {
 
 	public Integer getTotalPrice() {
 		return totalPrice;
+	}
+
+	@DOpt(type = DOpt.Type.LinkAdder)
+	public boolean addDetailExOrder(DetailExOrder d) {
+		if (!detailExOrders.contains(d))
+			detailExOrders.add(d);
+
+		return false;
+	}
+
+	@DOpt(type = DOpt.Type.LinkAdderNew)
+	public boolean addNewDetailExOrder(DetailExOrder d) {
+		detailExOrders.add(d);
+
+		count++;
+
+		return false;
+	}
+
+	@DOpt(type = DOpt.Type.LinkAdder)
+	// @MemberRef(name="enrolments")
+	public boolean addDetailExOrder(Collection<DetailExOrder> deos) {
+		boolean added = false;
+		for (DetailExOrder d : deos) {
+			if (!detailExOrders.contains(d)) {
+				if (!added)
+					added = true;
+				detailExOrders.add(d);
+			}
+		}
+		return false;
+	}
+
+	@DOpt(type = DOpt.Type.LinkAdderNew)
+	public boolean addNewDetailExOrder(Collection<DetailExOrder> deos) {
+		detailExOrders.addAll(deos);
+		count += deos.size();
+
+		return false;
+	}
+
+	@DOpt(type = DOpt.Type.LinkRemover)
+	public boolean removeDetailExOrder(DetailExOrder d) {
+		boolean removed = detailExOrders.remove(d);
+
+		if (removed) {
+			count--;
+
+		}
+		return false;
+	}
+
+	public void setDetailExOrder(Collection<DetailExOrder> deo) {
+		this.detailExOrders = deo;
+		count = deo.size();
+
+	}
+
+	public Collection<DetailExOrder> getDetailExOrders() {
+		return detailExOrders;
+	}
+
+	@DOpt(type = DOpt.Type.LinkCountGetter)
+	public int getCount() {
+		return count;
+		// return enrolments.size();
+	}
+
+	@DOpt(type = DOpt.Type.LinkCountSetter)
+	public void setCount(int count1) {
+		count = count1;
 	}
 
 	@Override
