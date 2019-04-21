@@ -21,14 +21,14 @@ public class DetailExOrder implements Comparable {
 	
 
 	@DAttr(name = "quantity", type = Type.Integer, length = 30, optional = false)
-	private int quantity;
+	private Integer quantity;
 
 	@DAttr(name = "exPrice", type = Type.Double, length = 30, optional = false)
-	private double exPrice;
+	private Double exPrice;
 
 	@DAttr(name = "totalPrice", type = Type.Double, auto = true, mutable = false, optional = true, serialisable = false, derivedFrom = {
 			"quantity", "exPrice" })
-	private double totalPrice;
+	private Double totalPrice;
 	
 	@DAttr(name = "saleOrder", type = Type.Domain, length = 5, optional = false)
 	  @DAssoc(ascName = "saleOrder-has-detailExOrders", role = "detailExOrder", 
@@ -39,8 +39,8 @@ public class DetailExOrder implements Comparable {
 	
 
 	@DOpt(type = DOpt.Type.DataSourceConstructor)
-	public DetailExOrder(String id,@AttrRef("coffee") Coffee coffee, @AttrRef("quantity") int quantity,
-			@AttrRef("exPrice") double exPrice,@AttrRef("saleOrder") SaleOrder saleOrder ) {
+	public DetailExOrder(String id,@AttrRef("coffee") Coffee coffee, @AttrRef("quantity") Integer quantity,
+			@AttrRef("exPrice") Double exPrice,@AttrRef("saleOrder") SaleOrder saleOrder ) {
 		this.id = nextID(id);
 		this.coffee = coffee;
 		this.quantity = quantity;
