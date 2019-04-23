@@ -11,7 +11,7 @@ import domainapp.basics.model.meta.DAttr.Type;
 import domainapp.basics.model.meta.DOpt;
 import domainapp.basics.util.Tuple;
 
-public class ImportOrder implements Comparable {
+public class ImportOrder {
 
 	@DAttr(name = "id", id = true, auto = true, type = Type.String, length = 6, mutable = false, optional = false)
 	private String id;
@@ -189,12 +189,5 @@ public class ImportOrder implements Comparable {
 			}
 		}
 	}
-	public int compareTo(Object o) {
-	    if (o == null || (!(o instanceof ImportOrder)))
-	      return -1;
 
-	    ImportOrder i = (ImportOrder) o;
-
-	    return this.coffee.getId().compareTo(i.coffee.getId());
-	  }
 }
