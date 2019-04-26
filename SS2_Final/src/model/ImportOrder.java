@@ -16,88 +16,48 @@ public class ImportOrder {
 	@DAttr(name = "id", id = true, auto = true, type = Type.String, length = 6, mutable = false, optional = false)
 	private String id;
 
-	@DAttr(name = "date", type = Type.String, length = 30, optional = false)
-	private String date;
 
-	@DAttr(name = "brandOfCoffee", type = Type.String, length = 30, optional = false)
-	private String brandOfCoffee;
-
-	@DAttr(name = "typeOfCoffee", type = Type.Domain, optional = false, length = 6)
-	@DAssoc(ascName = "order-has-typeOfCoffee", ascType = AssocType.One2Many, endType = AssocEndType.Many, role = "order", associate = @Associate(cardMax = 25, cardMin = 1, type = TypeOfCoffee.class))
-	private TypeOfCoffee typeOfCoffee;
-
+	@DAttr(name = "supplier", type = Type.Domain, optional = false, length = 6)
+	@DAssoc(ascName = "importOrder-has-supplier", ascType = AssocType.One2Many, endType = AssocEndType.Many, role = "importOrder", associate = @Associate(cardMax = 25, cardMin = 1, type = Supplier.class))
+	private Supplier supplier;
+	
 	@DAttr(name = "importer", type = Type.Domain, optional = false, length = 6)
-	@DAssoc(ascName = "order-has-import", ascType = AssocType.One2Many, endType = AssocEndType.Many, role = "order", associate = @Associate(cardMax = 25, cardMin = 1, type = Importer.class))
+	@DAssoc(ascName = "importOrder-has-importer", ascType = AssocType.One2Many, endType = AssocEndType.Many, role = "importOrder", associate = @Associate(cardMax = 25, cardMin = 1, type = Importer.class))
 	private Importer importer;
 
-	@DAttr(name = "quantity", length = 10, optional = false, type = Type.Integer)
-	private Integer quantity;
-	@DAttr(name = "unitPrice", length = 10, optional = false, type = Type.Integer)
-	private Integer unitPrice;
 
+	@DAttr(name = "date", type = Type.String, length = 30, optional = false)
+	private String date;
 	private static int idCounter = 0;
 	
-	 @DAttr(name = "coffee", type = Type.Domain, length = 5, optional = false)
-	  @DAssoc(ascName = "coffee-has-importOrders", role = "importOrder", 
-	    ascType = AssocType.One2Many, endType = AssocEndType.Many, 
-	    associate = @Associate(type = Coffee.class, cardMin = 1, cardMax = 1), dependsOn = true)
-	  private Coffee coffee;
 	
 	@DOpt(type=DOpt.Type.DataSourceConstructor)
-	public ImportOrder(String id, String date, String brandOfCoffee, TypeOfCoffee typeOfCoffee, Importer importer,
-			Integer quantity, Integer unitPrice, Coffee coffee) {
+	public ImportOrder(String id, Supplier supplier ,Importer importer,String date 
+			) {
 		this.id = nextID(id);
-		this.date = date;
-		this.brandOfCoffee = brandOfCoffee;
-		this.typeOfCoffee = typeOfCoffee;
+		this.supplier = supplier;
 		this.importer = importer;
-		this.quantity = quantity;
-		this.unitPrice = unitPrice;
-		this.coffee = coffee;
+		this.date = date;
 
 	}
 	
-//	@DOpt(type=DOpt.Type.ObjectFormConstructor)
-//	  @DOpt(type=DOpt.Type.RequiredConstructor)
-//	  public ImportOrder(@AttrRef("coffee") Coffee coffee 
-//	      ) throws ConstraintViolationException {
-//	    this(null, null ,null , null, null, null, null, coffee);
-//	  }
-	
 	@DOpt(type=DOpt.Type.ObjectFormConstructor)
 	 @DOpt(type=DOpt.Type.RequiredConstructor)
-	public ImportOrder(@AttrRef("date") String date, @AttrRef("brandOfCoffee") String brandOfCoffee,
-			@AttrRef("typeOfCoffee") TypeOfCoffee typeOfCoffee, @AttrRef("importer") Importer importer,
-			@AttrRef("quantity") Integer quantity, @AttrRef("unitPrice") Integer unitPrice,@AttrRef("coffee") Coffee coffee ) {
-		this(null, date, brandOfCoffee, typeOfCoffee, importer, quantity, unitPrice,coffee);
+	public ImportOrder(@AttrRef("supplier") Supplier supplier, @AttrRef("importer") Importer importer,
+			@AttrRef("date") String date ) {
+		this(null, supplier, importer, date );
 	}
 
 	public String getId() {
 		return id;
 	}
 
-	public String getDate() {
-		return date;
+	public Supplier getSupplier() {
+		return supplier;
 	}
 
-	public void setDate(String date) {
-		this.date = date;
-	}
-
-	public String getBrandOfCoffee() {
-		return brandOfCoffee;
-	}
-
-	public void setBrandOfCoffee(String brandOfCoffee) {
-		this.brandOfCoffee = brandOfCoffee;
-	}
-
-	public TypeOfCoffee getTypeOfCoffee() {
-		return typeOfCoffee;
-	}
-
-	public void setTypeOfCoffee(TypeOfCoffee typeOfCoffee) {
-		this.typeOfCoffee = typeOfCoffee;
+	public void setSupplier(Supplier supplier) {
+		this.supplier = supplier;
 	}
 
 	public Importer getImporter() {
@@ -108,42 +68,24 @@ public class ImportOrder {
 		this.importer = importer;
 	}
 
-	public int getQuantity() {
-		return quantity;
+	public String getDate() {
+		return date;
 	}
 
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
-	}
-
-	public int getUnitPrice() {
-		return unitPrice;
-	}
-
-	public void setUnitPrice(int unitPrice) {
-		this.unitPrice = unitPrice;
-	}
-	
-
-
-	public void setCoffee(Coffee coffee) {
-		this.coffee = coffee;
-	}
-	public Coffee getCoffee() {
-		return coffee;
+	public void setDate(String date) {
+		this.date = date;
 	}
 
 	@Override
 	public String toString() {
-		return "Order(" + id + "," + date + "," + brandOfCoffee + "," + typeOfCoffee + "," + importer + "," + quantity
-				+ "," + unitPrice + "," + coffee + ")";
+		return "Order(" + id + "," + supplier + "," + importer + "," + date + ")";
 	}
 
 	public String nextID(String id) throws ConstraintViolationException {
 		if (id == null) { // generate a new id
 			idCounter++;
 
-			return "OI" + idCounter;
+			return "IO" + idCounter;
 		} else {
 			// update id
 			int num;
