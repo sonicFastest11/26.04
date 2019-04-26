@@ -23,46 +23,49 @@ public class SaleOrder {
 	@DAttr(name = "customer", type = Type.Domain, length = 30, optional = false)
 	private Customer customer;
 
-	@DAttr(name = "product", type = Type.String, length = 30, optional = false)
-	private String product;
+	@DAttr(name = "seller", type = Type.Domain, length = 30, optional = false)
+	private Seller seller;
 
-	@DAttr(name = "unitPrice", type = Type.Integer, length = 30, optional = false)
-	private Integer unitPrice;
+	@DAttr(name = "date", type = Type.String, length = 30, optional = false)
+	private String date;
 
-	@DAttr(name = "quantity", type = Type.Integer, length = 30, optional = false)
-	private Integer quantity;
+//	@DAttr(name = "quantity", type = Type.Integer, length = 30, optional = false)
+//	private Integer quantity;
+//
+//	@DAttr(name = "totalPrice", type = Type.Integer, auto = true, mutable = false, optional = true, serialisable = false, derivedFrom = {
+//			"unitPrice", "quantity" })
+//	private Integer totalPrice;
 
-	@DAttr(name = "totalPrice", type = Type.Integer, auto = true, mutable = false, optional = true, serialisable = false, derivedFrom = {
-			"unitPrice", "quantity" })
-	private Integer totalPrice;
-
-	@DAttr(name = "detailExOrders", type = Type.Collection, optional = false, serialisable = false, filter = @Select(clazz = DetailExOrder.class))
-	@DAssoc(ascName = "saleOrder-has-detailExOrders", role = "saleOrder", ascType = AssocType.One2Many, endType = AssocEndType.One, associate = @Associate(type = DetailExOrder.class, cardMin = 0, cardMax = 30))
+	@DAttr(name = "detailExOrders", type = Type.Collection, optional = false, 
+			serialisable = false, filter = @Select(clazz = DetailExOrder.class))
+	@DAssoc(ascName = "saleOrder-has-detailExOrders", role = "saleOrder", 
+	ascType = AssocType.One2Many, endType = AssocEndType.One, 
+	associate = @Associate(type = DetailExOrder.class, cardMin = 0, cardMax = 30))
 	private Collection<DetailExOrder> detailExOrders;
 
 	private int count;
 
 	@DOpt(type = DOpt.Type.DataSourceConstructor)
-	public SaleOrder(String id, Customer customer, String product, Integer unitPrice, Integer quantity) {
+	public SaleOrder(String id, Customer customer, Seller seller, String date) {
 		this.id = nextID(id);
 		this.customer = customer;
-		this.product = product;
-		this.unitPrice = unitPrice;
-		this.quantity = quantity;
-		calTotal();
+		this.seller = seller;
+		this.date = date;
+//		this.quantity = quantity;
 		detailExOrders = new ArrayList<>();
+//		calTotal();
 		count = 0;
 	}
 
-	public void calTotal() {
-		totalPrice = unitPrice * quantity;
-	}
+//	public void calTotal() {
+//		totalPrice = unitPrice * quantity;
+//	}
 
 	@DOpt(type = DOpt.Type.ObjectFormConstructor)
 	@DOpt(type = DOpt.Type.RequiredConstructor)
-	public SaleOrder(@AttrRef("customer") Customer customer, @AttrRef("product") String product,
-			@AttrRef("unitPrice") Integer unitPrice, @AttrRef("quantity") Integer quantity) {
-		this(null, customer, product, unitPrice, quantity);
+	public SaleOrder(@AttrRef("customer") Customer customer, @AttrRef("seller") Seller seller,
+			@AttrRef("date") String date) {
+		this(null, customer, seller, date);
 	}
 
 	public Customer getCustomer() {
@@ -72,40 +75,58 @@ public class SaleOrder {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
+	
+	
 
-	public String getProduct() {
-		return product;
+//	public String getProduct() {
+//		return product;
+//	}
+//
+//	public void setProduct(String product) {
+//		this.product = product;
+//	}
+//
+//	public Integer getUnitPrice() {
+//		return unitPrice;
+//	}
+//
+//	public void setUnitPrice(Integer unitPrice) {
+//		this.unitPrice = unitPrice;
+//		calTotal();
+//	}
+//
+//	public Integer getQuantity() {
+//		return quantity;
+//	}
+//
+//	public void setQuantity(Integer quantity) {
+//		this.quantity = quantity;
+//		calTotal();
+//	}
+
+	public Seller getSeller() {
+		return seller;
 	}
 
-	public void setProduct(String product) {
-		this.product = product;
+	public void setSeller(Seller seller) {
+		this.seller = seller;
 	}
 
-	public Integer getUnitPrice() {
-		return unitPrice;
+	public String getDate() {
+		return date;
 	}
 
-	public void setUnitPrice(Integer unitPrice) {
-		this.unitPrice = unitPrice;
-		calTotal();
-	}
-
-	public Integer getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
-		calTotal();
+	public void setDate(String date) {
+		this.date = date;
 	}
 
 	public String getId() {
 		return id;
 	}
 
-	public Integer getTotalPrice() {
-		return totalPrice;
-	}
+//	public Integer getTotalPrice() {
+//		return totalPrice;
+//	}
 
 	@DOpt(type = DOpt.Type.LinkAdder)
 	public boolean addDetailExOrder(DetailExOrder d) {
@@ -180,8 +201,7 @@ public class SaleOrder {
 
 	@Override
 	public String toString() {
-		return "SaleOrder(" + id + "," + customer + "," + product + "," + unitPrice + "," + quantity + "," + totalPrice
-				+ ")";
+		return "SaleOrder(" + id + "," + customer + "," + seller + "," + date + ")";
 	}
 
 	public String nextID(String id) throws ConstraintViolationException {
